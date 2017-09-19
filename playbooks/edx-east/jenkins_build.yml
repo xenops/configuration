@@ -60,7 +60,6 @@
     - aws
     - role: datadog
       when: COMMON_ENABLE_DATADOG
-
     - jenkins_build
 
     # run just the splunkforwarder role by using '--tags "splunkonly"'
