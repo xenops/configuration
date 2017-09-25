@@ -1,4 +1,7 @@
 - Role: discovery
+  - Updated LANGUAGE_CODE to generic english. Added configuration for multilingual language package django-parler.
+
+- Role: discovery
   - Added `OPENEXCHANGERATES_API_KEY` for retrieving currency exchange rates.
 
 - Role: edxapp

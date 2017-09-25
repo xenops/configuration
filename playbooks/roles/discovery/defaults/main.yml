@@ -57,7 +57,18 @@ DISCOVERY_URL_ROOT: 'http://discovery:{{ DISCOVERY_NGINX_PORT }}'
 DISCOVERY_LOGOUT_URL: '{{ DISCOVERY_URL_ROOT }}/logout/'
 
 DISCOVERY_SECRET_KEY: 'Your secret key here'
-DISCOVERY_LANGUAGE_CODE: 'en-us'
+DISCOVERY_LANGUAGE_CODE: 'en'
+DISCOVERY_PARLER_DEFAULT_LANGUAGE_CODE: '{{DISCOVERY_LANGUAGE_CODE}}'
+DISCOVERY_PARLER_LANGUAGES : {
+    1: (
+        {'code': 'en', },
+        {'code': 'es', },
+    ),
+    'default': {
+         'fallbacks': ['{{DISCOVERY_PARLER_DEFAULT_LANGUAGE_CODE}}'],
+         'hide_untranslated': False,
+     }
+ }
 DISCOVERY_DEFAULT_PARTNER_ID: 1
 DISCOVERY_SESSION_EXPIRE_AT_BROWSER_CLOSE: false
 
