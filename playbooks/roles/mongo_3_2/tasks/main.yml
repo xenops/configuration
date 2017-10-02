@@ -18,6 +18,8 @@
     state: started
   tags:
     - "hugepages"
+    - "install"
+    - "install:configuration"
     - "manage"
     - "manage:start"
 
