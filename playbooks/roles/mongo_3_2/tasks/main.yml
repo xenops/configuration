@@ -134,6 +134,8 @@
     - "install"
     - "install:app-configuration"
     - "update_mongod_conf"
+    - "manage"
+    - "manage:db-replication"
 
 # If either auth or unauthed access comes back with a replica set, we
 # do not want to initialize one.  Since initialization requires a bunch
@@ -146,6 +148,8 @@
   when: authed_replica_set_already_configured.status is not defined
         and unauthed_replica_set_already_configured.status is not defined
   tags:
+    - "install"
+    - "install:app-configuration"
     - "manage"
     - "manage:db-replication"
 
@@ -178,8 +182,9 @@
     backup: yes
   register: update_mongod_conf
   tags:
+    - "install"
+    - "install:app-configuration"
     - "manage"
-    - "manage:db-replication"
     - "update_mongod_conf"
 
 - name: install logrotate configuration
@@ -225,8 +230,10 @@
   when: initialize_replica_set
   run_once: true
   tags:
+    - "install"
+    - "install:app-configuration"
     - "manage"
-    - "manage:db"
+    - "manage:db-users"
 
 # Now that the localhost exemption has been used to create the superuser, we need
 # to add replica set to our configuration.  This will never happen if we detected
@@ -238,8 +245,6 @@
   tags:
     - "install"
     - "install:app-configuration"
-    - "manage"
-    - "manage:db-replication"
 
 - name: re-copy configuration template with replica set enabled
   template:
@@ -248,8 +253,8 @@
     backup: yes
   when: initialize_replica_set
   tags:
-    - "manage"
-    - "manage:db-replication"
+    - "install"
+    - "install:app-configuration"
 
 - name: restart mongo service
   service:
@@ -318,7 +323,7 @@
   tags:
     - "manage"
     - "manage:db"
-    - "manage:db-replication"
+    - "manage:db-users"
 
 - name: ensure mongo starts at boot time
   service:
