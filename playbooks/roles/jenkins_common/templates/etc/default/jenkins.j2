@@ -1,0 +1,10 @@
+# defaults for jenkins continuous integration server
+
+JENKINS_HOME={{ jenkins_common_home }}
+JENKINS_CONFIG_PATH={{ jenkins_common_config_path }}
+JENKINS_LOG={{ jenkins_common_home }}/logs/jenkins.log
+JENKINS_WAR=/usr/share/jenkins/jenkins.war
+
+ORIG_JENKINS_ARGS="--webroot=/var/cache/jenkins/war --httpPort={{ jenkins_common_port }} --ajp13Port=-1"
+JENKINS_ARGS=""
+JAVA_ARGS={{ jenkins_common_jvm_args }}

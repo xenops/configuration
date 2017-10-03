@@ -32,6 +32,7 @@
     path: '{{ item }}'
     state: directory
     owner: '{{ jenkins_common_user }}'
+    group: '{{ jenkins_common_group }}'
   with_items:
     - /usr/share/jenkins
     - '{{ jenkins_common_home }}/init.groovy.d'
@@ -47,10 +48,20 @@
   get_url:
     url: '{{ jenkins_common_war_source }}/{{ jenkins_common_version }}.war'
     dest: /usr/share/jenkins/jenkins.war
+    owner: '{{ jenkins_common_user }}'
+    group: '{{ jenkins_common_group }}'
     force: yes
   tags:
     - install
     - install:app-requirements
+
+- name: Add Jenkins environment variable values for systemd
+  template:
+    src:  "etc/default/jenkins.j2"
+    dest: "/etc/default/jenkins"
+  tags:
+    - install
+    - install:system-requirements
 
 - name: Add Jenkins systemd configuration
   template:
@@ -76,6 +87,8 @@
       repo: '{{ jenkins_common_configuration_git_url }}'
       dest: '{{ jenkins_common_git_home }}/jenkins-configuration'
       version: '{{ jenkins_common_jenkins_configuration_branch }}'
+  become: true
+  become_user: '{{ jenkins_common_user }}'
   tags:
     - install
     - install:base
@@ -88,6 +101,8 @@
   environment:
     UTILS_PATH: '{{ jenkins_common_home }}/utils'
     JENKINS_VERSION: '{{ jenkins_common_version }}'
+  become: true
+  become_user: '{{ jenkins_common_user }}'
   tags:
     - install
     - install:base
@@ -96,6 +111,8 @@
 - name: Copy init scripts into init.groovy.d
   command: 'cp {{ jenkins_common_git_home }}/jenkins-configuration/{{ jenkins_common_configuration_src_path }}/{{ item }} {{ jenkins_common_home }}/init.groovy.d/'
   with_items: '{{ jenkins_common_configuration_scripts }}'
+  become: true
+  become_user: '{{ jenkins_common_user }}'
   tags:
     - install
     - install:base
@@ -106,6 +123,7 @@
     path: '{{ item }}'
     state: directory
     owner: '{{ jenkins_common_user }}'
+    group: '{{ jenkins_common_group }}'
   with_items:
     - '{{ jenkins_common_config_path }}/credentials'
     - '{{ jenkins_common_config_path }}/ec2'
@@ -118,6 +136,8 @@
   template:
     src: '{{ role_path }}/templates/config/{{ item }}.yml.j2'
     dest: '{{ jenkins_common_config_path }}/{{ item }}.yml'
+    owner: '{{ jenkins_common_user }}'
+    group: '{{ jenkins_common_group }}'
   with_items: '{{ jenkins_common_non_plugin_template_files }}'
   tags:
     - install
@@ -128,6 +148,8 @@
   template:
     src: '{{ role_path }}/templates/config/plugins.yml.j2'
     dest: '{{jenkins_common_config_path }}/plugins.yml'
+    owner: '{{ jenkins_common_user }}'
+    group: '{{ jenkins_common_group }}'
   tags:
     - install
     - install:base
@@ -135,7 +157,11 @@
     - install:jenkins-configuration
 
 - name: Copy ec2 config files
-  template: src={{ item }} dest='{{ jenkins_common_config_path }}/ec2/'
+  template:
+    src: '{{ item }}'
+    dest: '{{ jenkins_common_config_path }}/ec2/'
+    owner: '{{ jenkins_common_user }}'
+    group: '{{ jenkins_common_group }}'
   with_fileglob:
     - '{{ role_path }}/files/ec2/*'
   tags:
@@ -144,7 +170,11 @@
     - install:jenkins-configuration
 
 - name: Copy xml config files
-  template: src={{ item }} dest='{{ jenkins_common_config_path }}/xml/'
+  template:
+    src: '{{ item }}'
+    dest: '{{ jenkins_common_config_path }}/xml/'
+    owner: '{{ jenkins_common_user }}'
+    group: '{{ jenkins_common_group }}'
   with_fileglob:
     - '{{ role_path }}/files/xml/*'
   tags:
@@ -159,6 +189,8 @@
   environment:
     PLUGIN_OUTPUT_DIR: '{{ jenkins_common_home }}/plugins'
     PLUGIN_CONFIG: '{{ jenkins_common_config_path }}/plugins.yml'
+  become: true
+  become_user: '{{ jenkins_common_user }}'
   tags:
     - install
     - install:base
@@ -180,6 +212,8 @@
   copy:
     content: "{{ item.content }}"
     dest: '{{ jenkins_common_config_path }}/credentials/{{ item.name }}'
+    owner: '{{ jenkins_common_user }}'
+    group: '{{ jenkins_common_group }}'
   with_items: '{{ JENKINS_CUSTOM_SSH_LIST }}'
   no_log: yes
   tags:
@@ -191,6 +225,8 @@
   copy:
     content: '{{ JENKINS_EC2_PRIVATE_KEY }}'
     dest: '{{ jenkins_common_config_path }}/ec2/id_rsa'
+    owner: '{{ jenkins_common_user }}'
+    group: '{{ jenkins_common_group }}'
   no_log: yes
   tags:
     - install
