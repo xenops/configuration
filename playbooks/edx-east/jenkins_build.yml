@@ -58,13 +58,13 @@
 
   roles:
     - aws
-    - role: datadog
-      when: COMMON_ENABLE_DATADOG
+    # - role: datadog
+    #   when: COMMON_ENABLE_DATADOG
     - jenkins_build
 
     # run just the splunkforwarder role by using '--tags "splunkonly"'
     # e.g. ansible-playbook jenkins_testeng_master.yml -i inventory.ini --tags "splunkonly" -vvvv
-    - role: splunkforwarder
-      when: COMMON_ENABLE_SPLUNKFORWARDER
-      tags: splunkonly
-      become: True
+    # - role: splunkforwarder
+    #   when: COMMON_ENABLE_SPLUNKFORWARDER
+    #   tags: splunkonly
+    #   become: True
