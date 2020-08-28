@@ -59,6 +59,9 @@
     path: '{{ ecommerce_worker_home }}/ecomworker_env'
     line: 'export TZ="{{ ECOMMERCE_WORKER_TZ }}"'
     insertbefore: '^export ECOMMERCE_WORKER_CFG="{{ COMMON_CFG_DIR }}/{{ ecommerce_worker_service_name }}.yml"'
+  tags:
+    - install
+    - install:configuration
 
 - name: enable supervisor script
   file:
